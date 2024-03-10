@@ -1,0 +1,9 @@
+.bg-header {
+    background-color: rgb(23, 207, 109);
+}
+
+.h1-center {
+    color: white;
+    text-align: center;
+    flex-grow: 1;
+}
