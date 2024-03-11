@@ -141,8 +141,8 @@ async def upload_book(writer_id : int , book_detail : Uploadbook) -> dict:
     writer = controller.search_writer_by_id(writer_id)
     if writer is not None:
         book = Book(book_detail.name,book_detail.book_type,book_detail.price_coin,book_detail.intro,book_detail.content)
-        controller.upload_book(book,writer)
-        return {"Book's List" : controller.show_book_collection_of_writer(writer.account_name)}
+        # controller.upload_book(book,writer)
+        return {"status" : controller.upload_book(book,writer)}
     
 @app.get("/show_book_collection_of_reader", tags=["Book"])
 async def Show_Book_Collection_of_Reader(Reader_id:int) -> dict:
@@ -213,7 +213,7 @@ async def top_up(account_id : int, money : coinInput, chanel_id:int):
 
 @app.post("/transfer", tags=['Money'])
 async def transfer_coin_to_money(writer_id:int, data: coinInput):
-    return {controller.transfer(writer_id, data.coin)}
+    return {"status": controller.transfer(writer_id, data.coin)}
 
 
 # Review

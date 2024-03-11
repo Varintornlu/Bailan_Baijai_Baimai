@@ -61,6 +61,7 @@ class Controller:
         book.writer = writer
         self.__book_list.append(book)
         writer.book_collection_list.append(book)
+        return "Success"
 
     def add_payment_method(self, payment_method):
         self.__payment_method_list.append(payment_method)
