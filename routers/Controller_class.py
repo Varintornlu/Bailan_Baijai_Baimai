@@ -110,7 +110,7 @@ class Controller:
     def search_book_by_bookname(self, bookname):
         new_book_list = []
         for book in self.__book_list:
-            if book.name == bookname or bookname in book.name:
+            if book.name.lower() == bookname.lower() or bookname.lower() in book.name.lower():
                 format = {
                     "id": book.id,
                     "book_name" : book.name,
