@@ -305,9 +305,11 @@ class Controller:
         
         for info in account.coin_transaction_history_list:
             if info.type == "Buy" or info.type == "Rent":
-                coin_tran_list.append(f"You {info.type} books by using {info.coin} coin on {info.date_time}")
+                coin_tran_list.append(f"You {info.type} books by using {info.coin} coin on {info.date_time}.")
+            elif info.type == "top up":
+                coin_tran_list.append(f"You {info.type} {info.coin} coin.")
             elif info.type == "Transfer":
-                coin_tran_list.append(f"You {info.type} {info.coin} coin on {info.date_time}")
+                coin_tran_list.append(f"You {info.type} {info.coin} coin on {info.date_time}.")
 
         if coin_tran_list:
             return coin_tran_list
