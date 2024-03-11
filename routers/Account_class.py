@@ -25,12 +25,12 @@ class Reader(Account):
         return self.__account_name
 
     @property
-    def password(self):
-        return self.__password
-
-    @property
     def id_account(self):
         return self.__id_account
+    
+    @property
+    def password(self):
+        return self.__password
 
     @property
     def book_collection_list(self):
@@ -100,12 +100,12 @@ class Writer(Account):
         return self.__account_name
 
     @property
-    def password(self):
-        return self.__password
-
-    @property
     def id_account(self):
         return self.__id_account
+    
+    @property
+    def password(self):
+        return self.__password
 
     @property
     def coin(self):

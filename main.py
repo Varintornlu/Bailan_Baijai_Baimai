@@ -47,10 +47,10 @@ reader4 = Reader("Mer", "De")
 reader5 = Reader("Muc", "Du")
 reader6 = Reader('get','1234')
 
-writer1 = Writer("wrpak", "it")
-writer2 = Writer("warinww", 'me')
-writer3 = Writer("varinlu", "you")
-writer4 = Writer("monsac", "my")
+writer1 = Writer("Wrpak", "it")
+writer2 = Writer("Warinww", 'me')
+writer3 = Writer("Varinlu", "you")
+writer4 = Writer("Monsac", "my")
 
 book1 = Book("Great Book", "Fiction", 100, "intro", "Content")
 book2 = Book("Thai Book", "Non-fiction", 200, "intro", "Content")
@@ -59,8 +59,8 @@ book4 = Book("Code Book", "Non-fiction", 400, "intro", "Content")
 book5 = Book("Food Book", "Non-fiction", 500, "intro", "Content")
 book6 = Book("Animal Book", "Non-fiction", 600, "intro", "Content")
 
-promotion1 = Promotion("valentine", 10, 7)
-promotion2 = Promotion("new year", 15, 7)
+promotion1 = Promotion("Valentine", 10, 7)
+# promotion2 = Promotion("new year", 15, 7)
 
 chanels = [
     PaymentMethod("bank",1),
@@ -76,12 +76,12 @@ book1.review.add_comment(reader1, "I really enjoyed this book!")
 book1.review.add_comment(reader2, "Highly recommend it.")
 book2.review.add_comment(reader1, "A must-read for everyone!")
 
-promotion1.add_book_list(book1)
+# promotion2.add_book_list(book1)
 promotion1.add_book_list(book2)
-promotion2.add_book_list(book3)
-promotion2.add_book_list(book4)
-promotion2.add_book_list(book5)
-promotion2.add_book_list(book6)
+promotion1.add_book_list(book3)
+# promotion2.add_book_list(book4)
+# promotion2.add_book_list(book5)
+promotion1.add_book_list(book6)
 
 controller.upload_book(book1, writer1)
 controller.upload_book(book2, writer2)
@@ -98,6 +98,9 @@ controller.add_reader(reader5)
 controller.add_reader(reader6)
 
 controller.add_writer(writer1)
+controller.add_writer(writer2)
+controller.add_writer(writer3)
+controller.add_writer(writer4)
 
 controller.add_rating(1, 4)
 controller.add_rating(1, 5)
@@ -113,17 +116,13 @@ controller.add_rating(6, 5)
 controller.add_rating(6, 3)
 
 controller.add_promotion_list(promotion1)
-controller.add_promotion_list(promotion2)
+# controller.add_promotion_list(promotion2)
 
 # ------------------------------------------
 reader1.update_book_collection_list(book1)
-reader1.update_book_collection_list(book2)
-reader2.update_book_collection_list(book6)
+
 writer1.adding_coin = 10
 reader1.adding_coin = 2000  
-
-reader1.update_coin_transaction_history_list(50000,"","Rent")
-reader1.update_coin_transaction_history_list(600,"","Transfer")
 # ------------------------------------------
 
 
@@ -148,11 +147,9 @@ async def upload_book(writer_id : int , book_detail : Uploadbook) -> dict:
 async def Show_Book_Collection_of_Reader(Reader_id:int) -> dict:
     return {"Book's list" : controller.show_book_collection_of_reader(Reader_id)}
 
-@app.get("/show_book_collection_of_writer", tags=["Book"]) #ดูคลังหนังสือที่ตัวเองแต่ง
-async def show_book_when_upload_book(writer_id: int) -> dict:
-    writer = controller.search_writer_by_id(writer_id)
-    if writer is not None:
-        return {"Book's list" : controller.book_of_writer(writer)}
+@app.get("/show_book_collection_of_writer", tags=["Book"])
+async def show_book_when_upload_book(writer_name: str) -> dict:
+    return {"Book's list" : controller.show_book_collection_of_writer(writer_name)}
 
 # Search
 @app.get("/search_book_by_name", tags = ["Search"])
@@ -267,11 +264,12 @@ async def login(user: User):
 
 @app.get("/view_reader_list", tags = [ "Register/Login"])
 async def view_reader_list():
-    reader_list = []
+    readers = []
     for reader in controller.reader_list:
-        reader_list.append({
+        format = {
             "id": reader.id_account,
             "username": reader.account_name,
             "password": reader.password
-        })
-    return {"readers": reader_list}
+        }
+        readers.append(format)
+    return {"readers": readers}

@@ -4,8 +4,6 @@ from routers.Complain_class import Complain
 from routers.Review_class import Review
 from routers.Account_class import Reader, Writer
 
-
-
 class Controller:
     def __init__(self):
         self.__reader_list = []
@@ -82,7 +80,8 @@ class Controller:
                 "book_name" : book.name,
                 "writer_name" : book.writer.account_name,
                 "type_book" : book.book_type,
-                "rating" : book.review.rating
+                "rating" : book.review.rating,
+                "price" : book.price_coin
             }
             list.append(format)
         if list:
@@ -117,7 +116,8 @@ class Controller:
                     "book_name" : book.name,
                     "writer_name" : book.writer.account_name,
                     "type_book" : book.book_type,
-                    "rating" : book.review.rating
+                    "rating" : book.review.rating,
+                    "price" : book.price_coin
                 }
                 new_book_list.append(format)
         if new_book_list:
@@ -130,86 +130,37 @@ class Controller:
         if writer == None and type == None: #bookname
             for book in self.__book_list:
                 if book.name == bookname or bookname in book.name:
-                    # format = [f'Book Name: {book.name}' , f'Writer Name: {book.writer.account_name}' , f'Type of Book: {book.book_type}']
-                    format = {
-                    "id": book.id,
-                    "book_name" : book.name,
-                    "writer_name" : book.writer.account_name,
-                    "type_book" : book.book_type,
-                    "rating" : book.review.rating
-                }
+                    format = [f'Book Name: {book.name}' , f'Writer Name: {book.writer.account_name}' , f'Type of Book: {book.book_type}']
                     new_book_list.append(format)
         elif bookname == None and type == None: #writer
             for book in self.__book_list:
                 if book.writer.account_name == writer or writer in book.writer.account_name:
-                    # format = [f'Book Name: {book.name}' , f'Writer Name: {book.writer.account_name}' , f'Type of Book: {book.book_type}']
-                    format = {
-                    "id": book.id,
-                    "book_name" : book.name,
-                    "writer_name" : book.writer.account_name,
-                    "type_book" : book.book_type,
-                    "rating" : book.review.rating
-                }
+                    format = [f'Book Name: {book.name}' , f'Writer Name: {book.writer.account_name}' , f'Type of Book: {book.book_type}']
                     new_book_list.append(format)
         elif bookname == None and writer == None: #type
             for book in self.__book_list:
                 if book.book_type == type:
-                    # format = [f'Book Name: {book.name}' , f'Writer Name: {book.writer.account_name}' , f'Type of Book: {book.book_type}']
-                    format = {
-                    "id": book.id,
-                    "book_name" : book.name,
-                    "writer_name" : book.writer.account_name,
-                    "type_book" : book.book_type,
-                    "rating" : book.review.rating
-                }
+                    format = [f'Book Name: {book.name}' , f'Writer Name: {book.writer.account_name}' , f'Type of Book: {book.book_type}']
                     new_book_list.append(format)
         elif type == None: #bookname writer
             for book in self.__book_list:
                 if (book.writer.account_name == writer and book.name == bookname) or (writer in book.writer.account_name and book.name == bookname) or (book.writer.account_name == writer and bookname in book.name) or ( bookname in book.name and writer in book.writer.account_name):
-                    # format = [f'Book Name: {book.name}' , f'Writer Name: {book.writer.account_name}' , f'Type of Book: {book.book_type}']
-                    format = {
-                    "id": book.id,
-                    "book_name" : book.name,
-                    "writer_name" : book.writer.account_name,
-                    "type_book" : book.book_type,
-                    "rating" : book.review.rating
-                }
+                    format = [f'Book Name: {book.name}' , f'Writer Name: {book.writer.account_name}' , f'Type of Book: {book.book_type}']
                     new_book_list.append(format)
         elif writer == None: #bookname type
             for book in self.__book_list:
                 if (book.name == bookname and book.book_type == type) or (bookname in book.name and book.book_type == type):
-                    # format = [f'Book Name: {book.name}' , f'Writer Name: {book.writer.account_name}' , f'Type of Book: {book.book_type}']
-                    format = {
-                    "id": book.id,
-                    "book_name" : book.name,
-                    "writer_name" : book.writer.account_name,
-                    "type_book" : book.book_type,
-                    "rating" : book.review.rating
-                }
+                    format = [f'Book Name: {book.name}' , f'Writer Name: {book.writer.account_name}' , f'Type of Book: {book.book_type}']
                     new_book_list.append(format)
         elif bookname == None: #writer type
             for book in self.__book_list:
                 if (book.writer.account_name == writer and book.book_type == type) or (writer in book.writer.account_name and book.book_type == type):
-                    # format = [f'Book Name: {book.name}' , f'Writer Name: {book.writer.account_name}' , f'Type of Book: {book.book_type}']
-                    format = {
-                    "id": book.id,
-                    "book_name" : book.name,
-                    "writer_name" : book.writer.account_name,
-                    "type_book" : book.book_type,
-                    "rating" : book.review.rating
-                }
+                    format = [f'Book Name: {book.name}' , f'Writer Name: {book.writer.account_name}' , f'Type of Book: {book.book_type}']
                     new_book_list.append(format)
         elif bookname and writer and type: #bookname writer type
             for book in self.__book_list:
                 if bookname in book.name and writer in book.writer.account_name and book.book_type == type:
-                    # format = [f'Book Name: {book.name}' , f'Writer Name: {book.writer.account_name}' , f'Type of Book: {book.book_type}']
-                    format = {
-                    "id": book.id,
-                    "book_name" : book.name,
-                    "writer_name" : book.writer.account_name,
-                    "type_book" : book.book_type,
-                    "rating" : book.review.rating
-                }
+                    format = [f'Book Name: {book.name}' , f'Writer Name: {book.writer.account_name}' , f'Type of Book: {book.book_type}']
                     new_book_list.append(format)
 
         if new_book_list:
@@ -223,10 +174,13 @@ class Controller:
             if promotion.name_festival == promotion_name:
                 for book in promotion.book_list:
                     format = {
-                    "book_name" : book.name,
-                    "writer_name " : book.writer.account_name,
-                    "price_book" : book.price_coin
-                }
+                        "id": book.id,
+                        "book_name" : book.name,
+                        "writer_name" : book.writer.account_name,
+                        "type_book" : book.book_type,
+                        "rating" : book.review.rating,
+                        "price" : book.price_coin
+                    }
                     books.append(format)
                 if books == []:
                     return "No book in this promotion"
@@ -241,38 +195,43 @@ class Controller:
                     "writer_name" : book.writer.account_name,
                     "type_book" : book.book_type,
                     "intro" : book.intro,
-                    "rating" : book.review.rating
+                    "rating" : book.review.rating,
+                    "price" : book.price_coin
                 }
             return format
         return 'Not Found'
             
-    def book_of_writer(self,writer): #คลังหนังสือที่ตัวเองแต่ง ID 
-        new_book_list = []
-        for book in writer.book_collection_list:
-            # format = [f'Book Name: {book.name}' , f'Writer Name: {book.writer.account_name}' , f'Type of Book: {book.book_type}' , f'Price Coin: {book.price_coin}' , f'Intro: {book.intro}' , f'Content: {book.content}']
-            format = {
-                    "book_name" : book.name,
-                    "writer_name" : book.writer.account_name,
-                    "type_book" : book.book_type,
-                    "intro" : book.intro,
-                    "rating" : book.review.rating
-                }
-            new_book_list.append(format)
-
-        return new_book_list
+    def show_book_collection_of_writer(self,writer_name):
+        book_collection = []
+        for account in self.__writer_list:
+            if account.account_name == writer_name:
+                for book in account.book_collection_list:
+                    format = {
+                        "id": book.id,
+                        "book_name" : book.name,
+                        "writer_name" : book.writer.account_name,
+                        "type_book" : book.book_type,
+                        "intro" : book.intro,
+                        "rating" : book.review.rating,
+                        "price" : book.price_coin
+                    }
+                    book_collection.append(format)
+                return book_collection
+        return "Not found account"
     
     def show_book_collection_of_reader(self, reader_id):
         book_collection = []
         account = self.search_reader_by_id(reader_id)
         if account is not None:
-            for list in account.book_collection_list:
-                # format = [f'Book Name: {list.name}' , f'Writer Name: {list.writer.account_name}' , f'Type of Book: {list.book_type}' , f'Price Coin: {list.price_coin}' , f'Intro: {list.intro}' , f'Content: {list.content}']        
+            for book in account.book_collection_list:
                 format = {
-                    "book_name" : list.name,
-                    "writer_name" : list.writer.account_name,
-                    "type_book" : list.book_type,
-                    "intro" : list.intro,
-                    "rating" : list.review.rating
+                    "id": book.id,
+                    "book_name" : book.name,
+                    "writer_name" : book.writer.account_name,
+                    "type_book" : book.book_type,
+                    "intro" : book.intro,
+                    "rating" : book.review.rating,
+                    "price" : book.price_coin
                 }
                 book_collection.append(format)
         if book_collection:
@@ -448,7 +407,7 @@ class Controller:
                 return "Please rate this book in 0-5"
             else:
                 book.review.add_rating(rating)
-                return "Success"
+                return book.review.rating
         return "Not found book"
     
     def submit_comment(self, reader_id, book_id, message):
@@ -466,37 +425,50 @@ class Controller:
         book = self.search_book_by_id(book_id)
 
         if book is not None:
-            comments = book.review.show_comment() 
-            comment_list.append(comments)
+            for account, comment, date_time in book.review.comment_list:
+                format = {
+                    "account" : account.account_name,
+                    "comment" : comment,
+                    "datetime" : date_time
+                }
+                comment_list.append(format)
             return comment_list
-        
-        return "Not have comment"
+        return "Not found book"
 
 # Promotion
     def show_promotion(self):
-        promotions = []
         for promotion in self.__promotion_list:
-            promotions.append(f'promotion: {promotion.name_festival}')
-        if promotions == []:
-            return "No book in this pormotion"
-        return promotions
+            return promotion.name_festival
+        return "don't have pormotion now"
 
 # Complain
     def submit_complaint(self, user_id, message):
         complain = Complain(user_id, message)
-        self.__complain_list.append(complain)
+        
+        user = self.search_reader_by_id(user_id)
+        if user is None:
+            user = self.search_writer_by_id(user_id)
+            if user is None:
+                return "Not found account"
+            
         date_time = datetime.datetime.now()
         complain.date_time = date_time
+        self.__complain_list.append((user.account_name, message, complain.date_time))
         return "Success"
 
     def view_complaints(self):
         if not self.complain_list:
             return "No complaints available."
-        complaints_info = {}
-        for complain in self.complain_list:
-            if complain.user_id not in complaints_info:
-                complaints_info[complain.user_id] = []
-            complaints_info[complain.user_id].append({"message": complain.message, "datetime": complain.date_time})
+        complaints_info = []
+        for account, message, datetime in self.__complain_list:
+            format = {
+                "account": account,
+                "message": message,
+                "datetime": datetime
+            }
+            complaints_info.append(format)
+        if complaints_info == []:
+            return "Have no complain."
         return complaints_info
 
     def login_reader(self, account_name, password):
