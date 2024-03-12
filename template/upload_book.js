@@ -28,3 +28,25 @@ async function upload(event) {
         alert(error.response ? error.response.data.detail : 'An error occurred.');
     }
 }
+
+async function uploadFile() {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/uploadfile/', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+        document.getElementById('response').innerText = `File uploaded successfully. Filename: ${data.filename}`;
+        alert("Success")
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        document.getElementById('response').innerText = 'Error uploading file.';
+    }
+}

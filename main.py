@@ -277,3 +277,15 @@ async def view_reader_list():
         }
         readers.append(format)
     return {"readers": readers}
+
+upload_folder_path = r"C:\Users\User\Documents\Bailan-Baijai-Baimai\template\images"
+
+@app.post("/uploadfile/", tags=["Upload Image"])
+async def create_upload_file(file: UploadFile = File(...)):
+    # Save the content of the uploaded file to a new file
+    file_path = os.path.join(upload_folder_path, file.filename)
+    
+    with open(file_path, "wb") as f:
+        f.write(file.file.read())
+
+    return {"filename": file_path}
