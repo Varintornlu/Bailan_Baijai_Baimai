@@ -127,3 +127,9 @@ a {
 .comment-datetime {
     margin-top: 5px;
 }
+
+.custom-btn {
+    background-color: yellow;
+    color: #212529; /* Text color (adjust as needed) */
+    border-color: yellow; /* Border color */
+}
