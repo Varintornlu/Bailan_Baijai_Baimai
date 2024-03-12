@@ -1,5 +1,5 @@
-
-.form-group{
-  margin-top: 5px;
-  padding: 5px;
+.custom-size {
+  width: 250px; /* ปรับขนาดตามต้องการ */
+  height: 50px; /* ปรับขนาดตามต้องการ */
 }
+
