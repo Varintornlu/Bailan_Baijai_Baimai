@@ -3,9 +3,6 @@ from typing import Union
 from typing import List
 from fastapi import FastAPI, HTTPException , File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
-from PIL import Image
-from io import BytesIO
 import uvicorn
 import os
 
@@ -144,8 +141,8 @@ async def upload_book(writer_id : int , book_detail : Uploadbook) -> dict:
     writer = controller.search_writer_by_id(writer_id)
     if writer is not None:
         book = Book(book_detail.name,book_detail.book_type,book_detail.price_coin,book_detail.intro,book_detail.content)
-        # controller.upload_book(book,writer)
-        return {"status" : controller.upload_book(book,writer)}
+        controller.upload_book(book,writer)
+        return {"Book's List" : controller.show_book_collection_of_writer(writer.account_name)}
     
 @app.get("/show_book_collection_of_reader", tags=["Book"])
 async def Show_Book_Collection_of_Reader(Reader_id:int) -> dict:
@@ -156,6 +153,10 @@ async def show_book_when_upload_book(writer_name: str) -> dict:
     return {"Book's list" : controller.show_book_collection_of_writer(writer_name)}
 
 # Search
+@app.get("/search_coin", tags=['Coin'])
+async def search_coin(id:int) -> dict:
+    return {"coin": controller.search_coin(id)}
+
 @app.get("/search_book_by_name", tags = ["Search"])
 async def search_book_by_bookname(name:str) -> dict:
     return {"book_list" : controller.search_book_by_bookname(name)}
@@ -170,7 +171,7 @@ async def get_book_by_promotion(promotion:str) -> dict:
 
 
 #Cart
-@app.get("/add_cart", tags=['Cart'])
+@app.post("/add_cart", tags=['Cart'])
 async def add_book_to_card(reader_id: int, book_id: int) -> dict:
     return {"Book's in card": controller.add_book_to_cart(book_id, reader_id)}
 
@@ -180,7 +181,7 @@ async def remove_book_from_cart(reader_id :int, book_id :int) -> dict:
 
 @app.get("/show_cart", tags=["Cart"])
 async def show_cart(reader_id: int) -> dict:
-    return {"Reader's Cart": controller.show_reader_cart(reader_id)}  
+    return {"reader_cart": controller.show_reader_cart(reader_id)}  
 
 @app.post("/select_book_checkout", tags=['Cart'])
 async def select_book_checkout(reader_id: int, book_ids: List[int]):
@@ -204,6 +205,10 @@ async def rent(reader_id: int, data: BookIdList):
 async def show_coin_transaction(ID:int) -> dict:
     return{"Coin Transaction's List" : controller.cointrasaction_history(ID)}
 
+# Payment History
+@app.get("/show_payment_history", tags=["History"])
+async def show_payment_history(ID : int) -> dict:
+    return{"Payment History's List" : controller.payment_history(ID)}
 
 # Money
 @app.get("/chanels",tags=["Money"])
@@ -212,7 +217,7 @@ async def show_payment_method()->dict:
 
 @app.post("/top_up", tags=['Money'])
 async def top_up(account_id : int, money : coinInput, chanel_id:int):
-    return {"status" : controller.top_up(account_id, money.coin,chanel_id)}
+    return {controller.top_up(account_id, money.coin,chanel_id)}
 
 @app.post("/transfer", tags=['Money'])
 async def transfer_coin_to_money(writer_id:int, data: coinInput):
@@ -250,19 +255,27 @@ async def view_complaints():
 from fastapi import HTTPException
 
 # Register/Login
-@app.post("/register", tags = [ "Register/Login"])
-async def register(user: User):
+@app.post("/register_reader", tags = [ "Register/Login"])
+async def register_reader(user: User):
     message = controller.register_reader(user.account_name, user.password)
     if "successfully" in message:
         return {"message": message}
     else:
         raise HTTPException(status_code=400, detail=message)
+    
+@app.post("/register_writer", tags = [ "Register/Login"])
+async def register_writer(user: User):
+    message = controller.register_writer(user.account_name, user.password)
+    if "successfully" in message:
+        return {"message": message}
+    else:
+        raise HTTPException(status_code=400, detail=message)
 
-@app.post("/login", tags = [ "Register/Login"])
+@app.post("/login", tags=["Register/Login"])
 async def login(user: User):
-    account = controller.login_reader(user.account_name, user.password)
-    if account:
-        return {"message": "Login successful", "account_id": account.id_account}
+    account_id, account_type = controller.login(user.account_name, user.password)
+    if account_id and account_type:
+        return {"message": "Login successful", "account_id": account_id, "account_type": account_type}
     else:
         raise HTTPException(status_code=401, detail="Invalid username or password")
 
@@ -277,6 +290,18 @@ async def view_reader_list():
         }
         readers.append(format)
     return {"readers": readers}
+
+@app.get("/view_writer_list", tags = [ "Register/Login"])
+async def view_writer_list():
+    writers = []
+    for writer in controller.writer_list:
+        format = {
+            "id": writer.id_account,
+            "username": writer.account_name,
+            "password": writer.password
+        }
+        writers.append(format)
+    return {"writers": writers}
 
 upload_folder_path = r"C:\Users\User\Documents\Bailan-Baijai-Baimai\template\images"
 
