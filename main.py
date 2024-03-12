@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import os
 
+
 # routers class
 from routers.Controller_class import Controller
 from routers.Account_class import Reader, Writer
@@ -14,6 +15,7 @@ from routers.Review_class import Review
 from routers.Promotion_class import Promotion
 from routers.Complain_class import Complain
 from routers.PaymentMethod_class import PaymentMethod
+
 
 # models
 from models.BaseModel_class import User, coinInput, BookIdList, Uploadbook
@@ -121,9 +123,10 @@ controller.add_promotion_list(promotion1)
 # ------------------------------------------
 reader1.update_book_collection_list(book1)
 
-writer1.adding_coin = 10
+controller.top_up(1, 500, 1)
+
+writer1.adding_coin = 2000
 reader1.adding_coin = 2000  
-controller.top_up(1,50,1)
 # ------------------------------------------
 
 
@@ -173,7 +176,7 @@ async def get_book_by_promotion(promotion:str) -> dict:
 #Cart
 @app.post("/add_cart", tags=['Cart'])
 async def add_book_to_card(reader_id: int, book_id: int) -> dict:
-    return {"Book's in card": controller.add_book_to_cart(book_id, reader_id)}
+    return {"book": controller.add_book_to_cart(book_id, reader_id)}
 
 @app.delete("/remove_book", tags = ["Cart"])
 async def remove_book_from_cart(reader_id :int, book_id :int) -> dict:
@@ -217,7 +220,7 @@ async def show_payment_method()->dict:
 
 @app.post("/top_up", tags=['Money'])
 async def top_up(account_id : int, money : coinInput, chanel_id:int):
-    return {controller.top_up(account_id, money.coin,chanel_id)}
+    return {"status":controller.top_up(account_id, money.coin,chanel_id)}
 
 @app.post("/transfer", tags=['Money'])
 async def transfer_coin_to_money(writer_id:int, data: coinInput):

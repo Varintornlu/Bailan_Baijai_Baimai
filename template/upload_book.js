@@ -56,4 +56,3 @@ async function uploadFile() {
         document.getElementById('response').innerText = 'Error uploading file.';
     }
 }
-

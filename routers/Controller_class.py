@@ -281,7 +281,7 @@ class Controller:
             if reader.cart is not None and reader.cart.book_cart_list:
                 cart_info = []
                 for book in reader.cart.book_cart_list:
-                    cart_info.append({"name": book.name, "price": book.price_coin})
+                    cart_info.append({"name": book.name, "price": book.price_coin, "id": book.id})
                 return cart_info
             else:
                 return "Reader's cart is empty"
@@ -295,7 +295,7 @@ class Controller:
                 selected_books = [book for book in reader.cart.book_cart_list if book.id in book_ids]
                 if selected_books:
                     total_coin = sum(book.price_coin for book in selected_books)
-                    return {"message": "Books selected for checkout", "total_coin": total_coin}
+                    return {"message": "Books selected for checkout", "total_coin": total_coin, "list book": book_ids}
                 else:
                     return {"error": "Invalid book selection"}
             else:
@@ -316,15 +316,15 @@ class Controller:
             if info.type == "Buy" or info.type == "Rent":
                 coin_tran_list.append(f"You {info.type} books by using {info.coin} coin on {info.date_time}.")
             elif info.type == "top up":
-                coin_tran_list.append(f"You {info.type} {info.coin} coin on {info.date_time}.")
+                coin_tran_list.append(f"You {info.type} {info.coin} coin.")
             elif info.type == "Transfer":
-                coin_tran_list.append(f"You {info.type} {info.coin} coin on {info.date_time}")
+                coin_tran_list.append(f"You {info.type} {info.coin} coin on {info.date_time}.")
 
         if coin_tran_list:
             return coin_tran_list
         else:
             return "Not History"
-
+        
     def payment_history(self,account_id):
         payment_list = []
         account = self.search_reader_by_id(account_id)
@@ -339,7 +339,7 @@ class Controller:
             return payment_list
         else:
             return "Not History"
-        
+
 # Money
     def show_payment_method(self):
         chanels = []
@@ -364,9 +364,8 @@ class Controller:
                         account.update_coin_transaction_history_list(coin,date_time,"top up")
                         return "Success"
                     else : return "Please increse/decrese money 1 Baht"
-                return "Not Found Chanel"
+            return "Not Found Chanel"
         return "Don't Have any Account"
-
     def transfer(self, writer_id, coin):
         account = self.search_writer_by_id(writer_id)
         if account is not None:

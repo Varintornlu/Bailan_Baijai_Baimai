@@ -83,7 +83,6 @@
             //         // Change the href attribute to "transfer.html" or any appropriate URL
             //         topUpButton.setAttribute('href', 'transfer.html');
             //     }
-
             // }
             if (accountType === 'writer') {
                 // Change the text of the "Top Up" button to "Transfer"
@@ -102,7 +101,7 @@
                 topUpButton.parentNode.insertBefore(uploadButton, topUpButton.nextSibling);
                 }
             }
-
+        
             const account_id = localStorage.getItem('account_id');
             console.log(account_id)
         
@@ -129,6 +128,7 @@
 
     <script src="js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="index.js"></script>
 </body>
 

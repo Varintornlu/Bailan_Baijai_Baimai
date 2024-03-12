@@ -41,7 +41,7 @@ loginForm.addEventListener('submit', async (event) => {
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
     try {
-        const response = await axios.post('http://localhost:8000/login', {
+        const response = await axios.post('http://127.0.0.1:8000/login', {
             account_name: username,
             password: password
         });
