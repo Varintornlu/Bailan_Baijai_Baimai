@@ -41,22 +41,27 @@
     </nav>
 
     <h1 class="text-center py-4">Upload Book</h1>
-    <h2>How to Upload Book</h2>
-    <p>1. Name the cover image file to match the name of the book appointed by the author. and must be a JPG file only (other files are not allowed)</p>
-    <p>2. Upload the image file and press upload file. If the image is uploaded successfully, a pop-up "success" will appear. It is considered that the image upload is complete.</p>
-    <p>3. Fill in the book name, book type, price, intro and content.</p>
-    <p>4. Press submit. If the upload is successful, a pop-up "success" will appear. The upload is considered completed.</p>
+    <h2 class="title text-center py-4">How to Upload Book</h2>
+    <div class="steps">
+    <p class="step">1. Name the cover image file to match the name of the book appointed by the author. </p>
+    <p class="step" style="margin-left: 27px;">and must be a JPG file only (other files are not allowed)</p>
+    <p class="step">2. Upload the image file and press upload file. If the image is uploaded successfully,</p>
+    <p class="step" style="margin-left: 27px;">a pop-up "success" will appear. It is considered that the image upload is complete.</p>
+    <p class="step">3. Fill in the book name, book type, price, intro and content.</p>
+    <p class="step">4. Press submit. If the upload is successful, a pop-up "success" will appear.</p>
+    <p class="step" style="margin-left: 27px;">The upload is considered completed.</p>
+    </div>
     <br>
     <br>
-    <h3>Upload Book Cover (.jpg Only)</h3>
-    <form id="uploadForm" enctype="multipart/form-data">
+    <h3 class="title text-center py-4">Upload Book Cover (.jpg Only)</h3>
+    <form id="uploadForm" class="text-center" enctype="multipart/form-data">
         <input type="file" name="fileInput" id="fileInput" />
         <button type="button" onclick="uploadFile()">Upload File</button>
     </form>
     
     <br>
     <br>
-    <h3>Upload Book</h3>
+    <h3 class="title text-center py-4">Upload Book</h3>
     <div id="response"></div>
     <div class="container">
         <div class="row justify-content-center">
@@ -95,7 +100,7 @@
         </div>
     </div>
     
-
+    <div><br></div><div><br></div>
     <script src="js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="index.js"></script>
