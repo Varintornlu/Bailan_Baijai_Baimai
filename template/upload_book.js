@@ -33,6 +33,12 @@ async function uploadFile() {
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
 
+    // Check if a file is selected
+    if (!file) {
+        alert('Please select a file before uploading.');
+        return;
+    }
+
     const formData = new FormData();
     formData.append('file', file);
 
@@ -44,9 +50,10 @@ async function uploadFile() {
 
         const data = await response.json();
         document.getElementById('response').innerText = `File uploaded successfully. Filename: ${data.filename}`;
-        alert("Success")
+        alert('Success');
     } catch (error) {
         console.error('Error uploading file:', error);
         document.getElementById('response').innerText = 'Error uploading file.';
     }
 }
+
