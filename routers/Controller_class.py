@@ -497,5 +497,4 @@ class Controller:
         reader.id_account = self.__num_of_account
         self.__reader_list.append(reader)
         
-        return "Reader registered successfully."
-        
+        return "Reader registered successfully."     

@@ -1,8 +1,11 @@
 from typing import Optional
 from typing import Union
 from typing import List
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException , File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from PIL import Image
+from io import BytesIO
 import uvicorn
 import os
 
