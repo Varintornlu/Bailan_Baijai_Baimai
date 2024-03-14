@@ -38,6 +38,13 @@ class Controller:
     @property
     def promotion(self):
         return self.__promotion
+    
+    @promotion.setter
+    def promotion(self, new_promotion):
+        if self.__promotion is None:
+            self.__promotion = new_promotion
+        else:
+            return "This promotion is not timed out."
 
 # Add
     def add_reader(self, reader):
@@ -49,11 +56,12 @@ class Controller:
         self.__num_of_account += 1
         writer.id_account = self.__num_of_account
         self.__writer_list.append(writer)
-        
-    
 
     def add_complain(self, complain):
         self.__complain_list.append(complain)
+        
+    def add_payment_method(self, payment_method):
+        self.__payment_method_list.append(payment_method)
 
     def upload_book(self, book, writer):
         self.__num_of_book += 1
@@ -62,17 +70,6 @@ class Controller:
         self.__book_list.append(book)
         writer.book_collection_list.append(book)
         return "Success"
-
-    def add_payment_method(self, payment_method):
-        self.__payment_method_list.append(payment_method)
-        
-
-    @promotion.setter
-    def promotion(self, new_promotion):
-        if self.__promotion is None:
-            self.__promotion = new_promotion
-        else:
-            return "This promotion is not timed out."
 
 # Book
     def get_all_book(self):
@@ -84,7 +81,7 @@ class Controller:
                 "writer_name" : book.writer.account_name,
                 "type_book" : book.book_type,
                 "rating" : book.review.rating,
-                "price" : book.price_coin
+                "price" : book.price
             }
             list.append(format)
         if list:
@@ -110,7 +107,7 @@ class Controller:
                 return book
         return None
     
-    def search_coin(self, account_id):
+    def get_coin(self, account_id):
         account = self.search_reader_by_id(account_id)
         if account is None:
             account = self.search_writer_by_id(account_id)
@@ -128,7 +125,7 @@ class Controller:
                     "writer_name" : book.writer.account_name,
                     "type_book" : book.book_type,
                     "rating" : book.review.rating,
-                    "price" : book.price_coin
+                    "price" : book.price
                 }
                 new_book_list.append(format)
         if new_book_list:
@@ -190,7 +187,7 @@ class Controller:
                         "writer_name" : book.writer.account_name,
                         "type_book" : book.book_type,
                         "rating" : book.review.rating,
-                        "price" : book.price_coin
+                        "price" : book.price
                     }
                     books.append(format)
                 return books
@@ -206,7 +203,7 @@ class Controller:
                     "type_book" : book.book_type,
                     "intro" : book.intro,
                     "rating" : book.review.rating,
-                    "price" : book.price_coin
+                    "price" : book.price
                 }
             return format
         return 'Not Found'
@@ -223,7 +220,7 @@ class Controller:
                         "type_book" : book.book_type,
                         "intro" : book.intro,
                         "rating" : book.review.rating,
-                        "price" : book.price_coin
+                        "price" : book.price
                     }
                     book_collection.append(format)
                 return book_collection
@@ -241,7 +238,7 @@ class Controller:
                     "type_book" : book.book_type,
                     "intro" : book.intro,
                     "rating" : book.review.rating,
-                    "price" : book.price_coin
+                    "price" : book.price
                 }
                 book_collection.append(format)
         if book_collection:
@@ -285,7 +282,7 @@ class Controller:
             if reader.cart is not None and reader.cart.book_cart_list:
                 cart_info = []
                 for book in reader.cart.book_cart_list:
-                    cart_info.append({"name": book.name, "price": book.price_coin, "id": book.id})
+                    cart_info.append({"name": book.name, "price": book.price, "id": book.id})
                 return cart_info
             else:
                 return "Reader's cart is empty"
@@ -298,7 +295,7 @@ class Controller:
             if reader.cart is not None and reader.cart.book_cart_list:
                 selected_books = [book for book in reader.cart.book_cart_list if book.id in book_ids]
                 if selected_books:
-                    total_coin = sum(book.price_coin for book in selected_books)
+                    total_coin = sum(book.price for book in selected_books)
                     return {"message": "Books selected for checkout", "total_coin": total_coin, "list book": book_ids}
                 else:
                     return {"error": "Invalid book selection"}
@@ -308,7 +305,7 @@ class Controller:
             return {"error": "The reader does not exist."}
 
 # History
-    def cointrasaction_history(self,account_id):
+    def show_cointrasaction_history(self,account_id):
         coin_tran_list = []
         account = self.search_reader_by_id(account_id)
         if account is None:
@@ -317,19 +314,16 @@ class Controller:
                 return "Not Found Account"
         
         for info in account.coin_transaction_history_list:
-            if info.type == "Buy" or info.type == "Rent":
+            if info.type == "buy" or info.type == "rent":
                 coin_tran_list.append(f"You {info.type} books by using {info.coin} coin on {info.date_time}.")
-            elif info.type == "top up":
+            elif info.type == "top up" or info.type == "exchange":
                 coin_tran_list.append(f"You {info.type} {info.coin} coin on {info.date_time}.")
-            elif info.type == "Transfer":
-                coin_tran_list.append(f"You {info.type} {info.coin} coin on {info.date_time}.")
-
         if coin_tran_list:
             return coin_tran_list
         else:
             return "Not History"
         
-    def payment_history(self,account_id):
+    def show_payment_history(self,account_id):
         payment_list = []
         account = self.search_reader_by_id(account_id)
         if account is not None:
@@ -338,7 +332,7 @@ class Controller:
         account = self.search_writer_by_id(account_id)
         if account is not None:
             for data in account.payment_history_list:
-                payment_list.append(f"You transfer {data.money} coins on {data.date_time}")
+                payment_list.append(f"You exchange coins for {data.money} Bath on {data.date_time}")
         if payment_list:
             return payment_list
         else:
@@ -363,49 +357,51 @@ class Controller:
                     if money % 2 == 0:
                         coin = money/2
                         date_time = datetime.datetime.now()
-                        account.adding_coin = coin
+                        account.add_coin(coin)
                         account.update_payment_history_list(money,date_time)
                         account.update_coin_transaction_history_list(coin,date_time,"top up")
                         return "Success"
                     else : return "Please increse/decrese money 1 Baht"
             return "Not Found Chanel"
         return "Don't Have any Account"
-    def transfer(self, writer_id, coin):
+    def exchange(self, writer_id, coin):
         account = self.search_writer_by_id(writer_id)
         if account is not None:
             if account.coin >= coin:
                 money = coin*2
                 date_time = datetime.datetime.now()
-                account.money = money
-                account.losing_coin = coin
-                account.update_coin_transaction_history_list(coin, date_time, "Transfer")
+                account.add_money(money)
+                account.lost_coin(coin)
+                account.update_payment_history_list(money,date_time)
+                account.update_coin_transaction_history_list(coin, date_time, "exchange")
                 return "Success"
             return "You don't have enough coin"
         return "Not found your account"
 
 # Buy / Rent
     def buy_book(self, id_account ,list_book_id): 
-            account = self.search_reader_by_id(id_account)
-            if account is not None:
-                price = 0
-                for id in list_book_id:
-                    book = self.search_book_by_id(id)
-                    if book is not None:
-                        price += book.price_coin
-                        account.update_book_collection_list(book)
-                        book.writer.adding_coin = book.price_coin 
-                    else : return "No Book"
+        account = self.search_reader_by_id(id_account)
+        if account is not None:
+            price = 0
+            for id in list_book_id:
+                book = self.search_book_by_id(id)
+                if book is not None:
+                    price += book.price
+                    account.update_book_collection_list(book)
+                    book.writer.add_coin(book.price)
+                    book.update_book_status("Buy")
+                else : return "No Book"
                     
-                    if account.coin >= price:
-                        date_time = datetime.datetime.now()
-                        account.update_coin_transaction_history_list(price, date_time, "Buy")
-                        account.losing_coin = price 
-                        book.num_of_reader = 1
-                        return "success" 
-                    else : return "Don't have coin enough"
-                else : return "Not Found Account"
+            if account.coin >= price:
+                date_time = datetime.datetime.now()
+                account.update_coin_transaction_history_list(price, date_time, "buy")
+                account.lost_coin(price)
+                book.add_num_of_reader(1)
+                return "success" 
+            else : return "Don't have coin enough"
+        else : return "Not Found Account"
     
-    def rent(self, reader_id, book_id_list):
+    def rent_book(self, reader_id, book_id_list):
         account = self.search_reader_by_id(reader_id)
         if account is not None:
             sum_price = 0
@@ -414,21 +410,21 @@ class Controller:
                 if book is not None:
                     if book in account.book_collection_list:
                         return "You already have "+str(book.name)
-                    book.update_book_status()
-                    book.num_of_reader = 1
-                    new_book_price = book.price_coin*0.8
+                    book.update_book_status("Rent")
+                    book.add_num_of_reader(1)
+                    new_book_price = book.price*0.8
                     sum_price += new_book_price
                     account.update_book_collection_list(book)
-                    book.writer.adding_coin = new_book_price
+                    book.writer.add_coin(new_book_price)
                 else: return "Not found book"
                 
-                if account.coin >= sum_price:
-                    account.losing_coin = sum_price
-                    date_time = datetime.datetime.now()
-                    account.update_coin_transaction_history_list(sum_price, date_time, "Rent")
-                    return "Success"
-                return "Don't have coin enough"
-            return "Not found account"
+            if account.coin >= sum_price:
+                account.lost_coin(sum_price)
+                date_time = datetime.datetime.now()
+                account.update_coin_transaction_history_list(sum_price, date_time, "rent")
+                return "Success"
+            return "Don't have coin enough"
+        return "Not found account"
     
 # Review
     def add_rating(self, book_id, rating):

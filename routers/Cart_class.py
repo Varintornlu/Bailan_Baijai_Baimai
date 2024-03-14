@@ -15,9 +15,3 @@ class Cart:
                 self.__book_cart_list.remove(book)
                 return True
         return False
-
-    def buy(self):
-        pass
-
-    def rent(self):
-        pass

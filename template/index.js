@@ -485,6 +485,6 @@ function loadCoinInfo(account_id) {
   };
 
   // Adjust the URL to match your FastAPI route
-  xhr.open("GET", "http://127.0.0.1:8000/search_coin?id=" + account_id, true);
+  xhr.open("GET", "http://127.0.0.1:8000/get_coin?id=" + account_id, true);
   xhr.send();
 }

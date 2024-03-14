@@ -59,18 +59,16 @@ class Reader(Account):
     @id_account.setter
     def id_account(self, id_account):
         self.__id_account = id_account
-
-    @coin.setter
-    def adding_coin(self, adding_coin):
-        self.__coin += adding_coin
-        
-    @coin.setter
-    def losing_coin(self, losing_coin):
-        self.__coin -= losing_coin
         
     @cart.setter
     def cart(self, new_cart):
         self.__cart = new_cart
+        
+    def add_coin(self, added_coins):
+        self.__coin += added_coins
+        
+    def lost_coin(self, lost_coins):
+        self.__coin -= lost_coins
 
     def update_payment_history_list(self,money,date_time):
         self.__payment_history_list.append(PaymentHistory(money,date_time))   
@@ -93,6 +91,7 @@ class Writer(Account):
         self.__coin = 0
         self.__money = 0
         self.__book_collection_list = []
+        self.__payment_history_list = []
         self.__coin_transaction_history_list = []
 
     @property
@@ -120,6 +119,10 @@ class Writer(Account):
         return self.__book_collection_list
     
     @property
+    def payment_history_list(self):
+        return self.__payment_history_list
+    
+    @property
     def coin_transaction_history_list(self):
         return self.__coin_transaction_history_list
     
@@ -127,23 +130,20 @@ class Writer(Account):
     def id_account(self, id_account):
         self.__id_account = id_account
     
-    @money.setter
-    def money(self, adding_money):
-        self.__money += adding_money
+    def add_money(self, added_money):
+        self.__money += added_money
         
-    @coin.setter
-    def adding_coin(self, adding_coin):
-        self.__coin += adding_coin
+    def add_coin(self, added_coins):
+        self.__coin += added_coins
         
-    @coin.setter
-    def losing_coin(self, losing_coin):
-        self.__coin -= losing_coin
-
-    def get_review(self):
-        pass
+    def lost_coin(self, lost_coins):
+        self.__coin -= lost_coins
 
     def update_book_collection_list(self, book):
         self.__book_collection_list.append(book)
 
+    def update_payment_history_list(self,money,date_time):
+        self.__payment_history_list.append(PaymentHistory(money,date_time))   
+        
     def update_coin_transaction_history_list(self,coin,date_time,type):
         self.__coin_transaction_history_list.append(Coin_transaction(coin,date_time,type))

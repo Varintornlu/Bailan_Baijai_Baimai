@@ -1,7 +1,7 @@
 class PaymentHistory:
     def __init__(self, money, date_time):
         self.__money = money
-        self.__date_time = date_time.strftime("%c")
+        self.__date_time = date_time
         
     def __str__(self):
         return str(self.money) + str(self.date_time)
@@ -16,7 +16,7 @@ class PaymentHistory:
 
     @property
     def date_time(self):
-        return self.__date_time
+        return self.__date_time.strftime("%c")
 
     @date_time.setter
     def date_time(self, new_date_time):

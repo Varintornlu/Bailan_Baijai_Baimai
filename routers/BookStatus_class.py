@@ -1,15 +1,12 @@
 class BookStatus:
     def __init__(self, start_date, end_date, status):
-        self.__start_date = start_date.strftime("%c")
-        self.__end_date = end_date.strftime("%c")
+        self.__start_date = start_date
+        self.__end_date = end_date
         self.__status = status
-        
-    def __str__(self):
-        return f'You rent this book since {self.__start_date} and end with {self.__end_date}'
 
     @property
     def start_date(self):
-        return self.__start_date
+        return self.__start_date.strftime("%c")
 
     @start_date.setter
     def start_date(self, new_start_date):
@@ -17,7 +14,7 @@ class BookStatus:
 
     @property
     def end_date(self):
-        return self.__end_date
+        return self.__end_date.strftime("%c")
 
     @end_date.setter
     def end_date(self, new_end_date):

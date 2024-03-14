@@ -3,12 +3,12 @@ from routers.BookStatus_class import BookStatus
 import datetime
 
 class Book:
-    def __init__(self, name, book_type, price_coin, intro, content):
+    def __init__(self, name, book_type, price, intro, content):
         self.__name = name
         self.__id = 0
         self.__writer = None
         self.__book_type = book_type
-        self.__price_coin = price_coin
+        self.__price = price
         self.__intro = intro
         self.__content = content
         self.__review = Review()
@@ -33,8 +33,8 @@ class Book:
         return self.__book_type
 
     @property
-    def price_coin(self):
-        return self.__price_coin
+    def price(self):
+        return self.__price
 
     @property
     def intro(self):
@@ -72,17 +72,21 @@ class Book:
     def promotion(self, new_promotion):
         self.__promotion = new_promotion
     
-    @price_coin.setter
+    @price.setter
     def coin(self):
         if self.__promotion is not None:
             if self.__promotion.discount > 0 and self.__promotion.discount <= 100:
-                self.__price_coin *= 1-(self.__promotion.discount*0.01)
+                self.__price *= 1-(self.__promotion.discount*0.01)
 
-    @num_of_reader.setter
-    def num_of_reader(self, new_num_of_reader):
+    def add_num_of_reader(self, new_num_of_reader):
         self.__num_of_reader += new_num_of_reader
         
-    def update_book_status(self):
-        start = datetime.datetime.now()
-        end = start + datetime.timedelta(days=7)
-        self.__book_status = BookStatus(start, end, "Rent")
+    def update_book_status(self, type):
+        if type == "Rent":
+            start = datetime.datetime.now()
+            end = start + datetime.timedelta(days=7)
+            self.__book_status = BookStatus(start, end, type)
+        elif type == "Buy":
+            start = None
+            end = None
+            self.__book_status = BookStatus(start, end, type)

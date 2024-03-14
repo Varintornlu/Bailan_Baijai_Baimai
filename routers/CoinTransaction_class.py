@@ -1,7 +1,7 @@
 class Coin_transaction:
     def __init__(self, coin, date_time, type):
         self.__coin = coin
-        self.__date_time = date_time.strftime("%c")
+        self.__date_time = date_time
         self.__type = type
         
     @property
@@ -10,7 +10,7 @@ class Coin_transaction:
 
     @property
     def  date_time(self):
-        return self.__date_time
+        return self.__date_time.strftime("%c")
 
     @property
     def  type(self):

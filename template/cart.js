@@ -106,7 +106,7 @@ async function rent() {
     try {
         console.log(selectedBooks)
         const accountId = localStorage.getItem('account_id');
-        const response = await axios.post(`http://127.0.0.1:8000/rent?reader_id=${accountId}`, {
+        const response = await axios.post(`http://127.0.0.1:8000/rent_book?reader_id=${accountId}`, {
             book_id: selectedBooks
         });
         console.log(response.data.rent);

@@ -32,6 +32,3 @@ class Promotion:
     def add_book_list(self, book):
         self.__book_list.append(book)
         book.promotion = Promotion(self.__name_festival, self.__discount, self.__period)
-    
-    def show_info(self):
-        return f"For {self.__name_festival} festival we give you {self.__discount} discount!"

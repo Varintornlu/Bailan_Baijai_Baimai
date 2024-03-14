@@ -79,11 +79,8 @@ book1.review.add_comment(reader1, "I really enjoyed this book!")
 book1.review.add_comment(reader2, "Highly recommend it.")
 book2.review.add_comment(reader1, "A must-read for everyone!")
 
-# promotion2.add_book_list(book1)
 promotion1.add_book_list(book2)
 promotion1.add_book_list(book3)
-# promotion2.add_book_list(book4)
-# promotion2.add_book_list(book5)
 promotion1.add_book_list(book6)
 
 controller.upload_book(book1, writer1)
@@ -119,15 +116,14 @@ controller.add_rating(6, 5)
 controller.add_rating(6, 3)
 
 controller.promotion = promotion1
-# controller.add_promotion_list(promotion2)
 
 # ------------------------------------------
 reader1.update_book_collection_list(book1)
 
 controller.top_up(1, 500, 1)
 
-writer1.adding_coin = 2000
-reader1.adding_coin = 2000  
+writer1.add_coin(2000)
+reader1.add_coin(2000)  
 # ------------------------------------------
 
 
@@ -157,9 +153,9 @@ async def show_book_when_upload_book(writer_name: str) -> dict:
     return {"Book's list" : controller.show_book_collection_of_writer(writer_name)}
 
 # Search
-@app.get("/search_coin", tags=['Coin'])
-async def search_coin(id:int) -> dict:
-    return {"coin": controller.search_coin(id)}
+@app.get("/get_coin", tags=['Coin'])
+async def get_coin(id:int) -> dict:
+    return {"coin": controller.get_coin(id)}
 
 @app.get("/search_book_by_name", tags = ["Search"])
 async def search_book_by_bookname(name:str) -> dict:
@@ -195,24 +191,22 @@ async def select_book_checkout(reader_id: int, book_ids: List[int]):
 # But / Rent
 @app.post("/buy_book", tags=["Buy"])
 async def buy_book(account_id: int, list_book : BookIdList):
-    return {
-        "Buy" : controller.buy_book(account_id,list_book.book_id)
-    }
+    return {"Buy" : controller.buy_book(account_id,list_book.book_id)}
 
-@app.post("/rent", tags=['Rent'])
-async def rent(reader_id: int, data: BookIdList):
-    return {"rent": controller.rent(reader_id, data.book_id)}
+@app.post("/rent_book", tags=['Rent'])
+async def rent_book(reader_id: int, data: BookIdList):
+    return {"Rent": controller.rent_book(reader_id, data.book_id)}
 
 
 # Coin Transaction History
 @app.get("/show_coin_transaction",tags=["Coin Transaction"])
 async def show_coin_transaction(ID:int) -> dict:
-    return{"Coin Transaction's List" : controller.cointrasaction_history(ID)}
+    return{"Coin Transaction's List" : controller.show_cointrasaction_history(ID)}
 
 # Payment History
 @app.get("/show_payment_history", tags=["History"])
 async def show_payment_history(ID : int) -> dict:
-    return{"Payment History's List" : controller.payment_history(ID)}
+    return{"Payment History's List" : controller.show_payment_history(ID)}
 
 # Money
 @app.get("/chanels",tags=["Money"])
