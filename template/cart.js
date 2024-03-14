@@ -94,7 +94,17 @@ function toggleBookSelection(bookId) {
 }
 
 async function rent() {
+    if (selectedBooks.length == 0){
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Cart is empty!",
+            footer: '<a href="#" style="text-align: center;">Why do I have this issue?</a>'
+        }); 
+        return;
+    }
     try {
+        console.log(selectedBooks)
         const accountId = localStorage.getItem('account_id');
         const response = await axios.post(`http://127.0.0.1:8000/rent?reader_id=${accountId}`, {
             book_id: selectedBooks
@@ -106,6 +116,9 @@ async function rent() {
             showConfirmButton: false,
             timer: 1500
         });
+        for (const book of selectedBooks) {
+            removeFromCart(book);
+        }
     } catch (error) {
         Swal.fire({
             icon: "error",
@@ -118,6 +131,15 @@ async function rent() {
 
 
 async function buy() {
+    if (selectedBooks.length == 0){
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Cart is empty!",
+            footer: '<a href="#" style="text-align: center;">Why do I have this issue?</a>'
+        }); 
+        return;
+    }
     try {
         const accountId = localStorage.getItem('account_id');
         const response = await axios.post(`http://127.0.0.1:8000/buy_book?account_id=${accountId}`, {
@@ -130,6 +152,9 @@ async function buy() {
             showConfirmButton: false,
             timer: 1500
         });
+        for (const book of selectedBooks) {
+            removeFromCart(book);
+        }
     } catch (error) {
         Swal.fire({
             icon: "error",
@@ -140,8 +165,17 @@ async function buy() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-
+function check_collection(accountType) {
+    console.log(Type);
+    if (accountType === Type) {
+      window.location.href = 'reader_book_collection.html';
+    } else {
+      window.location.href = 'writer_book_collection.html';
+    }
+  }
+  
+  document.addEventListener('DOMContentLoaded', function () {
+  
     // Check if there is a saved account ID
     if (account_id) {
         // Display the account ID on the page

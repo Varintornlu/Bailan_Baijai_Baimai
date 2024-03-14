@@ -4,25 +4,34 @@ async function addToCart() {
     const accountId = localStorage.getItem('account_id');
     try {
         const response = await axios.post(`http://127.0.0.1:8000/add_cart?reader_id=${accountId}&book_id=${bookId}`);
-        console.log(response.data.book)
+        // console.log(response.data.book)
         result = response.data.book
         console.log(result)
-        if (result === "Success") {
+        if (result == "Success") {
             Swal.fire({
                 icon: "success",
                 title: "Book added to cart",
                 showConfirmButton: false,
                 timer: 1500
             });
-        } else if (result === "Book is already in the cart"){
+            return;
+        } else if (result == "Book is already in the cart"){
             Swal.fire({
                 icon: "error",
                 title: "Book is already in the cart",
                 showConfirmButton: false,
                 timer: 1500
             });
-        } 
-
+            return;
+        } else if (result == "You already have this book"){
+            Swal.fire({
+                icon: "error",
+                title: "You already have this book",
+                showConfirmButton: false,
+                timer: 1500
+            });
+            return;
+        }
     } catch (error) {
         Swal.fire({
             icon: "error",
@@ -33,8 +42,17 @@ async function addToCart() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-
+function check_collection(accountType) {
+    console.log(Type);
+    if (accountType === Type) {
+      window.location.href = 'reader_book_collection.html';
+    } else {
+      window.location.href = 'writer_book_collection.html';
+    }
+  }
+  
+  document.addEventListener('DOMContentLoaded', function () {
+  
     // Check if there is a saved account ID
     if (account_id) {
         // Display the account ID on the page
