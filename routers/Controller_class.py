@@ -1,7 +1,5 @@
 import datetime
-from routers.BookStatus_class import BookStatus
 from routers.Complain_class import Complain
-from routers.Review_class import Review
 from routers.Account_class import Reader, Writer
 
 class Controller:
@@ -79,7 +77,6 @@ class Controller:
                 "id": book.id,
                 "book_name" : book.name,
                 "writer_name" : book.writer.account_name,
-                "type_book" : book.book_type,
                 "rating" : book.review.rating,
                 "price" : book.price
             }
@@ -193,20 +190,24 @@ class Controller:
                 return books
             return "Not found this promotion"
         return "Don't have promotion now"
-            
+    
+
     def show_book_info(self, book_id):
         book = self.search_book_by_id(book_id)
-        if book is not None:
-            format = {
-                    "book_name" : book.name,
-                    "writer_name" : book.writer.account_name,
-                    "type_book" : book.book_type,
-                    "intro" : book.intro,
-                    "rating" : book.review.rating,
-                    "price" : book.price
-                }
-            return format
-        return 'Not Found'
+        if book is None:
+            return 'Not found book'
+        format = {
+                "book_name" : book.name,
+                "writer_name" : book.writer.account_name,
+                "type_book" : book.book_type,
+                "intro" : book.intro,
+                "rating" : book.review.rating,
+                "price" : book.price,
+                "rating" : book.review.rating,
+                "promotion" : book.get_promotion_info()
+            }
+        return format
+        
             
     def show_book_collection_of_writer(self,writer_name):
         book_collection = []
@@ -340,20 +341,20 @@ class Controller:
 
 # Money
     def show_payment_method(self):
-        chanels = []
+        channels = []
         for c in self.__payment_method_list:
              format = {
-                 "id":c.chanel_id,
-                "name":c.chanel_name
+                 "id":c.channel_id,
+                "name":c.channel_name
              }
-             chanels.append(format)
-        return chanels
+             channels.append(format)
+        return channels
 
-    def top_up(self, id_account, money, chanel):
+    def top_up(self, id_account, money, channel):
         account = self.search_reader_by_id(id_account)
         if account is not None:  
             for c in self.__payment_method_list:
-                if c.chanel_id == chanel:
+                if c.channel_id == channel:
                     if money % 2 == 0:
                         coin = money/2
                         date_time = datetime.datetime.now()
@@ -362,7 +363,7 @@ class Controller:
                         account.update_coin_transaction_history_list(coin,date_time,"top up")
                         return "Success"
                     else : return "Please increse/decrese money 1 Baht"
-            return "Not Found Chanel"
+            return "Not Found Channel"
         return "Don't Have any Account"
     def exchange(self, writer_id, coin):
         account = self.search_writer_by_id(writer_id)
@@ -379,52 +380,59 @@ class Controller:
         return "Not found your account"
 
 # Buy / Rent
-    def buy_book(self, id_account ,list_book_id): 
-        account = self.search_reader_by_id(id_account)
-        if account is not None:
-            price = 0
-            for id in list_book_id:
-                book = self.search_book_by_id(id)
-                if book is not None:
-                    price += book.price
-                    account.update_book_collection_list(book)
-                    book.writer.add_coin(book.price)
-                    book.update_book_status("Buy")
-                else : return "No Book"
-                    
-            if account.coin >= price:
-                date_time = datetime.datetime.now()
-                account.update_coin_transaction_history_list(price, date_time, "buy")
-                account.lost_coin(price)
-                book.add_num_of_reader(1)
-                return "success" 
-            else : return "Don't have coin enough"
-        else : return "Not Found Account"
-    
     def rent_book(self, reader_id, book_id_list):
         account = self.search_reader_by_id(reader_id)
-        if account is not None:
-            sum_price = 0
-            for id in book_id_list:
-                book = self.search_book_by_id(id)
-                if book is not None:
-                    if book in account.book_collection_list:
-                        return "You already have "+str(book.name)
-                    book.update_book_status("Rent")
-                    book.add_num_of_reader(1)
-                    new_book_price = book.price*0.8
-                    sum_price += new_book_price
-                    account.update_book_collection_list(book)
-                    book.writer.add_coin(new_book_price)
-                else: return "Not found book"
-                
-            if account.coin >= sum_price:
-                account.lost_coin(sum_price)
-                date_time = datetime.datetime.now()
-                account.update_coin_transaction_history_list(sum_price, date_time, "rent")
-                return "Success"
-            return "Don't have coin enough"
-        return "Not found account"
+        if account is None:
+            return "Account not found"
+
+        for book_id in book_id_list:
+            book = self.search_book_by_id(book_id)
+            if book is None:
+                return f"Book not found"
+            
+            if book in account.book_collection_list:
+                return f"You already have book"
+            
+            if account.coin < book.price:
+                return f"Not enough coins"
+            
+            account.lost_coin(book.price)
+            account.update_book_collection_list(book)
+            date_time = datetime.datetime.now()
+            account.update_coin_transaction_history_list(book.price, date_time, "rent")
+            book.add_num_of_reader(1)
+            book.update_book_status("Rent")
+            book.writer.add_coin(book.price)
+
+        return f"Success"
+    
+
+    def rent_book(self, reader_id, book_id_list):
+        account = self.search_reader_by_id(reader_id)
+        if account is None:
+            return "Account not found"
+
+        for book_id in book_id_list:
+            book = self.search_book_by_id(book_id)
+            if book is None:
+                return f"Book not found"
+            
+            if book in account.book_collection_list:
+                return f"You already have book"
+            
+            new_book_price = book.price * 0.8
+            if account.coin < new_book_price:
+                return f"Not enough coins"
+            
+            account.lost_coin(new_book_price)
+            account.update_book_collection_list(book)
+            date_time = datetime.datetime.now()
+            account.update_coin_transaction_history_list(new_book_price, date_time, "rent")
+            book.add_num_of_reader(1)
+            book.update_book_status("Rent")
+            book.writer.add_coin(new_book_price)
+
+        return f"Success"
     
 # Review
     def add_rating(self, book_id, rating):

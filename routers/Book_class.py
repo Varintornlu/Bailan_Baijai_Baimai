@@ -87,6 +87,11 @@ class Book:
             end = start + datetime.timedelta(days=7)
             self.__book_status = BookStatus(start, end, type)
         elif type == "Buy":
-            start = None
+            start = datetime.datetime.now()
             end = None
             self.__book_status = BookStatus(start, end, type)
+            
+    def get_promotion_info(self):
+        if self.__promotion is not None:
+            return f"{self.__promotion.name_festival} festival give you {self.__promotion.discount}% discount for {self.__promotion.period} days"
+        else: return None

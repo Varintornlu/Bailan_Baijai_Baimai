@@ -1,22 +1,15 @@
-from typing import Optional
-from typing import Union
 from typing import List
-from fastapi import FastAPI, HTTPException
-from fastapi import FastAPI, HTTPException , File, UploadFile
+from fastapi import FastAPI, HTTPException ,File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import os
-
 
 # routers class
 from routers.Controller_class import Controller
 from routers.Account_class import Reader, Writer
 from routers.Book_class import Book
-from routers.Review_class import Review
 from routers.Promotion_class import Promotion
-from routers.Complain_class import Complain
 from routers.PaymentMethod_class import PaymentMethod
-
 
 # models
 from models.BaseModel_class import User, coinInput, BookIdList, Uploadbook
@@ -63,14 +56,13 @@ book5 = Book("Food Book", "Non-fiction", 500, "intro", "Content")
 book6 = Book("Animal Book", "Non-fiction", 600, "intro", "Content")
 
 promotion1 = Promotion("Valentine", 10, 7)
-# promotion2 = Promotion("new year", 15, 7)
 
-chanels = [
+channels = [
     PaymentMethod("bank",1),
     PaymentMethod("credit card",2)
     ]
 
-for c in chanels:
+for c in channels:
     controller.add_payment_method(c)
 
 controller.top_up(7,500,1)
@@ -116,12 +108,9 @@ controller.add_rating(6, 5)
 controller.add_rating(6, 3)
 
 controller.promotion = promotion1
-
 # ------------------------------------------
 reader1.update_book_collection_list(book1)
-
 controller.top_up(1, 500, 1)
-
 writer1.add_coin(2000)
 reader1.add_coin(2000)  
 # ------------------------------------------
@@ -141,7 +130,6 @@ async def upload_book(writer_id : int , book_detail : Uploadbook) -> dict:
     writer = controller.search_writer_by_id(writer_id)
     if writer is not None:
         book = Book(book_detail.name,book_detail.book_type,book_detail.price_coin,book_detail.intro,book_detail.content)
-        # controller.upload_book(book,writer)
         return {"status" : controller.upload_book(book,writer)}
     
 @app.get("/show_book_collection_of_reader", tags=["Book"])
@@ -152,11 +140,14 @@ async def Show_Book_Collection_of_Reader(Reader_id:int) -> dict:
 async def show_book_when_upload_book(writer_name: str) -> dict:
     return {"Book's list" : controller.show_book_collection_of_writer(writer_name)}
 
-# Search
+
+# Coin
 @app.get("/get_coin", tags=['Coin'])
 async def get_coin(id:int) -> dict:
     return {"coin": controller.get_coin(id)}
 
+
+# Search
 @app.get("/search_book_by_name", tags = ["Search"])
 async def search_book_by_bookname(name:str) -> dict:
     return {"book_list" : controller.search_book_by_bookname(name)}
@@ -198,28 +189,28 @@ async def rent_book(reader_id: int, data: BookIdList):
     return {"Rent": controller.rent_book(reader_id, data.book_id)}
 
 
-# Coin Transaction History
-@app.get("/show_coin_transaction",tags=["Coin Transaction"])
+#History
+@app.get("/show_coin_transaction",tags=["History"])
 async def show_coin_transaction(ID:int) -> dict:
     return{"Coin Transaction's List" : controller.show_cointrasaction_history(ID)}
 
-# Payment History
 @app.get("/show_payment_history", tags=["History"])
 async def show_payment_history(ID : int) -> dict:
     return{"Payment History's List" : controller.show_payment_history(ID)}
 
+
 # Money
-@app.get("/chanels",tags=["Money"])
+@app.get("/channels",tags=["Money"])
 async def show_payment_method()->dict:
-    return {"chanels":controller.show_payment_method()}
+    return {"channels":controller.show_payment_method()}
 
 @app.post("/top_up", tags=['Money'])
-async def top_up(account_id : int, money : coinInput, chanel_id:int):
-    return {"status":controller.top_up(account_id, money.coin,chanel_id)}
+async def top_up(account_id : int, money : coinInput, channel_id:int):
+    return {"status":controller.top_up(account_id, money.coin,channel_id)}
 
-@app.post("/transfer", tags=['Money'])
-async def transfer_coin_to_money(writer_id:int, data: coinInput):
-    return {"status": controller.transfer(writer_id, data.coin)}
+@app.post("/exchange", tags=['Money'])
+async def exchange_coin_to_money(writer_id:int, data: coinInput):
+    return {"status": controller.exchange(writer_id, data.coin)}
 
 
 # Review
@@ -241,6 +232,7 @@ async def view_comment(Book_id : int) -> dict:
 async def show_promotion() -> dict:
     return {"Promotion": controller.promotion.name_festival}
 
+
 #Complain
 @app.post("/submit_complaint", tags = ["Complain"])
 async def submit_complaint(user_id: int, message: str):
@@ -250,7 +242,6 @@ async def submit_complaint(user_id: int, message: str):
 async def view_complaints():
     return {"Complain": controller.view_complaints()}
 
-from fastapi import HTTPException
 
 # Register/Login
 @app.post("/register_reader", tags = [ "Register/Login"])
@@ -277,35 +268,11 @@ async def login(user: User):
     else:
         raise HTTPException(status_code=401, detail="Invalid username or password")
 
-@app.get("/view_reader_list", tags = [ "Register/Login"])
-async def view_reader_list():
-    readers = []
-    for reader in controller.reader_list:
-        format = {
-            "id": reader.id_account,
-            "username": reader.account_name,
-            "password": reader.password
-        }
-        readers.append(format)
-    return {"readers": readers}
-
-@app.get("/view_writer_list", tags = [ "Register/Login"])
-async def view_writer_list():
-    writers = []
-    for writer in controller.writer_list:
-        format = {
-            "id": writer.id_account,
-            "username": writer.account_name,
-            "password": writer.password
-        }
-        writers.append(format)
-    return {"writers": writers}
-
+# Upload book
 upload_folder_path = r"C:\Users\User\Documents\Bailan-Baijai-Baimai\template\images"
 
 @app.post("/uploadfile/", tags=["Upload Image"])
 async def create_upload_file(file: UploadFile = File(...)):
-    # Save the content of the uploaded file to a new file
     file_path = os.path.join(upload_folder_path, file.filename)
     
     with open(file_path, "wb") as f:
